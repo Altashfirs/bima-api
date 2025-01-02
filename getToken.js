@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-async function login() {
+async function getToken() {
     const url = 'https://bima.upnyk.ac.id/login'; // URL login
     const username = '123230062'; // Ganti dengan username yang valid
     const password = 'fw4pqs#$'; // Ganti dengan password Anda
@@ -41,7 +41,8 @@ async function login() {
 
         if (tokenMatch && tokenMatch[1]) {
             const token = tokenMatch[1];
-            console.log('Token berhasil diambil:', token);
+            //console.log('Token berhasil diambil:', token);
+            return token;
         } else {
             console.log('Token tidak ditemukan.');
         }
@@ -50,4 +51,34 @@ async function login() {
     }
 }
 
-login();
+async function getGrade(token) {
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'https://apibima.upnyk.ac.id/v2/khs/show?params=2kQP-dQKR4qvyQF1zCYYD0pmElbTfE-5HAT-dOvlXakfZpy6_NUEwt-Q_PwLqnPf-ifqAaIn92hbnl6Jti6yRg',
+        headers: {
+            'Jwt': token,
+        }
+    };
+
+    axios.request(config)
+        .then((response) => {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+// Fungsi utama untuk menjalankan login dan mendapatkan grade
+async function main() {
+    const token = await getToken(); // Tunggu hingga login selesai
+    // console.log('Token:', token); // Tampilkan token
+    if (token) {
+        await getGrade(token); // Panggil getGrade jika token berhasil diambil
+
+    }
+
+}
+
+main(); // Jalankan fungsi utama
