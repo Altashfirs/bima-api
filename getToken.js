@@ -41,8 +41,7 @@ async function login() {
 
         if (tokenMatch && tokenMatch[1]) {
             const token = tokenMatch[1];
-            // console.log('Token berhasil diambil:', token);
-            return token;
+            console.log('Token berhasil diambil:', token);
         } else {
             console.log('Token tidak ditemukan.');
         }
