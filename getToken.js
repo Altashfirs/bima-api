@@ -89,7 +89,6 @@ async function main() {
         await getGrade(token); // Panggil getGrade jika token berhasil diambil
 
     }
-
 }
 
 main(); // Jalankan fungsi utama
