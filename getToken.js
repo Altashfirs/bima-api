@@ -93,4 +93,4 @@ async function main() {
 
 }
 
-main(); // Jalankan fungsi utama
+module.export = main; // Jalankan fungsi utama
