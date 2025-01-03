@@ -26,7 +26,7 @@ async function checkGrades() {
         );
 
         if (newGrades.length > 0) {
-            const message = `New grades available:\n${newGrades.map(grade => `${grade.nama}: ${grade.nilai}`).join('\n')}`;
+            const message = `New grades available:\n${newGrades.map(grade => `${grade.nama}`).join('\n')}`;
             await sendDiscordNotification(message);
             previousGrades = currentGrades; // Update previous grades
         } else {
