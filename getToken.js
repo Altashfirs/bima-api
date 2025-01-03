@@ -13,8 +13,7 @@ async function getToken() {
         const $ = cheerio.load(loginPageResponse.data);
 
         // Mengambil CSRF token dari elemen yang sesuai
-        const csrfToken = $('input[name="_token"]').val(); // Ganti dengan selector yang sesuai
-        // console.log('CSRF Token:', csrfToken); // Debugging
+        const csrfToken = $('input[name="_token"]').val();
 
         // Mengirim permintaan POST untuk login
         const response = await axios.post(url, new URLSearchParams({
@@ -33,7 +32,6 @@ async function getToken() {
         const $response = cheerio.load(response.data);
         const scripts = $response('script');
 
-
         // Mengambil isi dari tag <script> kedua
         const secondScriptContent = $response(scripts[1]).html();
 
@@ -41,9 +39,7 @@ async function getToken() {
         const tokenMatch = secondScriptContent.match(/localStorage\.setItem\("token", "(.*?)"\)/);
 
         if (tokenMatch && tokenMatch[1]) {
-            const token = tokenMatch[1];
-            //console.log('Token berhasil diambil:', token);
-            return token;
+            return tokenMatch[1]; // Return the token
         } else {
             console.log('Token tidak ditemukan.');
         }
@@ -62,36 +58,30 @@ async function getJson(token) {
         }
     };
 
-    axios.request(config)
-        .then((response) => {
-            // Check if data and lists exist and is an array
-            if (response.data && response.data.data && Array.isArray(response.data.data.lists)) {
-                // Filter the lists where nilai is not empty
-                const filteredGrades = response.data.data.lists.filter(item => item.nilai !== "");
-
-                // Pretty print the filtered JSON response
-                // console.log(JSON.stringify(filteredGrades, null, 2)); // Indent with 2 spaces
-                return filteredGrades;
-            } else {
-                console.log('Lists data is not available or is not an array.');
-                return [];
-            }
-        })
-        .catch((error) => {
-            console.log(error);
+    try {
+        const response = await axios.request(config);
+        // Check if data and lists exist and is an array
+        if (response.data && response.data.data && Array.isArray(response.data.data.lists)) {
+            // Filter the lists where nilai is not empty
+            const filteredGrades = response.data.data.lists.filter(item => item.nilai !== "");
+            return filteredGrades; // Return the filtered grades
+        } else {
+            console.log('Lists data is not available or is not an array.');
             return [];
-        });
+        }
+    } catch (error) {
+        console.log('Error fetching grades:', error);
+        return [];
+    }
 }
 
 // Fungsi utama untuk menjalankan login dan mendapatkan grade
 async function getGrade() {
     const token = await getToken(); // Tunggu hingga login selesai
-    // console.log('Token:', token); // Tampilkan token
     if (token) {
-        await getJson(token); // Panggil getGrade jika token berhasil diambil
-
+        return await getJson(token); // Return the grades if token is successfully obtained
     }
-
+    return []; // Return an empty array if token is not obtained
 }
 
-module.export = getGrade; // Jalankan fungsi utama
+module.exports = getGrade; // Correctly export the getGrade function
