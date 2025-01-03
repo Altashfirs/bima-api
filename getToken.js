@@ -2,9 +2,10 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function getToken() {
+    require('dotenv').config();
     const url = 'https://bima.upnyk.ac.id/login'; // URL login
-    const username = '123230062'; // Ganti dengan username yang valid
-    const password = 'fw4pqs#$'; // Ganti dengan password Anda
+    const username = process.env.USERNAME; // Ganti dengan username yang valid
+    const password = process.env.PASSWORD; // Ganti dengan password Anda
 
     try {
         // Mengambil halaman login untuk mendapatkan CSRF token
