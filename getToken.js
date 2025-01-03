@@ -1,10 +1,10 @@
+require('dotenv').config();
 const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function getToken() {
-    require('dotenv').config();
     const url = 'https://bima.upnyk.ac.id/login'; // URL login
-    const username = process.env.USERNAME; // Ganti dengan username yang valid
+    const username = process.env.NIM; // Ganti dengan username yang valid
     const password = process.env.PASSWORD; // Ganti dengan password Anda
 
     try {
