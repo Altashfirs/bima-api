@@ -38,7 +38,7 @@ async function checkGrades() {
 }
 
 // Memeriksa nilai setiap 5 menit (300000 ms)
-setInterval(checkGrades, 300000); // 5 menit
+setInterval(checkGrades, 1200000); // 5 menit
 
 // Memanggil fungsi checkGrades untuk pertama kali
 checkGrades();
