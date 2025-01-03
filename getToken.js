@@ -1,10 +1,11 @@
+require('dotenv').config();
 const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function getToken() {
     const url = 'https://bima.upnyk.ac.id/login'; // URL login
-    const username = '123230062'; // Ganti dengan username yang valid
-    const password = 'fw4pqs#$'; // Ganti dengan password Anda
+    const username = process.env.NIM; // Ganti dengan username yang valid
+    const password = process.env.PASSWORD; // Ganti dengan password Anda
 
     try {
         // Mengambil halaman login untuk mendapatkan CSRF token
@@ -51,7 +52,7 @@ async function getToken() {
     }
 }
 
-async function getGrade(token) {
+async function getJson(token) {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
@@ -69,26 +70,28 @@ async function getGrade(token) {
                 const filteredGrades = response.data.data.lists.filter(item => item.nilai !== "");
 
                 // Pretty print the filtered JSON response
-                console.log(JSON.stringify(filteredGrades, null, 2)); // Indent with 2 spaces
-
+                // console.log(JSON.stringify(filteredGrades, null, 2)); // Indent with 2 spaces
+                return filteredGrades;
             } else {
                 console.log('Lists data is not available or is not an array.');
-
+                return [];
             }
         })
         .catch((error) => {
             console.log(error);
+            return [];
         });
 }
 
 // Fungsi utama untuk menjalankan login dan mendapatkan grade
-async function main() {
+async function getGrade() {
     const token = await getToken(); // Tunggu hingga login selesai
     // console.log('Token:', token); // Tampilkan token
     if (token) {
-        await getGrade(token); // Panggil getGrade jika token berhasil diambil
+        await getJson(token); // Panggil getGrade jika token berhasil diambil
 
     }
+
 }
 
-main(); // Jalankan fungsi utama
+module.export = getGrade; // Jalankan fungsi utama
