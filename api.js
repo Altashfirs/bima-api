@@ -1,3 +1,3 @@
-import { login } from './getToken.js'
+const getToken = require('./getToken.js');
 
-login();
+getToken;
