@@ -63,7 +63,8 @@ async function getGrade(token) {
 
     axios.request(config)
         .then((response) => {
-            console.log(JSON.stringify(response.data));
+            const filteredGrades = response.data.grades.filter(grade => grade.nilai !== "");
+            console.log(JSON.stringify(filteredGrades.data, null, 2));
         })
         .catch((error) => {
             console.log(error);
