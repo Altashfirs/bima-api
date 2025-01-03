@@ -63,7 +63,18 @@ async function getGrade(token) {
 
     axios.request(config)
         .then((response) => {
-            console.log(JSON.stringify(response.data));
+            // Check if data and lists exist and is an array
+            if (response.data && response.data.data && Array.isArray(response.data.data.lists)) {
+                // Filter the lists where nilai is not empty
+                const filteredGrades = response.data.data.lists.filter(item => item.nilai !== "");
+
+                // Pretty print the filtered JSON response
+                console.log(JSON.stringify(filteredGrades, null, 2)); // Indent with 2 spaces
+
+            } else {
+                console.log('Lists data is not available or is not an array.');
+
+            }
         })
         .catch((error) => {
             console.log(error);
