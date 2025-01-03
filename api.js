@@ -1,6 +1,6 @@
 require('dotenv').config(); // Memuat variabel dari .env
 const axios = require('axios');
-const getGrade = require('./getToken.js');
+const getGrade = require('./getToken.js'); // Ensure this is the correct function
 
 const DISCORD_WEBHOOK_URL = process.env.WEBHOOK; // Ganti dengan URL webhook Discord Anda
 let previousGrades = []; // Menyimpan nilai sebelumnya
@@ -10,33 +10,35 @@ async function sendDiscordNotification(message) {
         await axios.post(DISCORD_WEBHOOK_URL, {
             content: message
         });
-
     } catch (error) {
         console.error('Error sending Discord notification:', error);
-
     }
-
 }
 
 async function checkGrades() {
-    if (getGrade) {
-        const currentGrades = getGrade;
-        // const newGrades = currentGrades.filter(grade => !previousGrades.some(prev => prev.kode_mk === grade.kode_mk && prev.nilai === grade.nilai));
-        console.log(currentGrades);
-        // if (newGrades.length > 0) {
-        //     const message = `New grades available:\n${newGrades.map(grade => `${grade.nama}: ${grade.nilai}`).join('\n')}`;
-        //     await sendDiscordNotification(message);
-        //     previousGrades = currentGrades; // Update previous grades
+    const currentGrades = await getGrade(); // Call the function to get grades
+    if (currentGrades.length > 0) {
+        // console.log('Current Grades:', currentGrades); // Log the current grades
 
-        // } else {
-        //     console.log('No new grades found.');
+        // Check for new grades
+        const newGrades = currentGrades.filter(grade =>
+            !previousGrades.some(prev => prev.kode_mk === grade.kode_mk && prev.nilai === grade.nilai)
+        );
 
-        // }
+        if (newGrades.length > 0) {
+            const message = `New grades available:\n${newGrades.map(grade => `${grade.nama}: ${grade.nilai}`).join('\n')}`;
+            await sendDiscordNotification(message);
+            previousGrades = currentGrades; // Update previous grades
+        } else {
+            console.log('No new grades found.');
+        }
+    } else {
+        console.log('Failed to retrieve grades or no grades available.');
     }
 }
 
 // Memeriksa nilai setiap 5 menit (300000 ms)
-setInterval(checkGrades, 1000); // 5 menit
+setInterval(checkGrades, 300000); // 5 menit
 
 // Memanggil fungsi checkGrades untuk pertama kali
 checkGrades();
